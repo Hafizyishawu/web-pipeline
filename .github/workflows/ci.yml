@@ -45,7 +45,7 @@ jobs:
         with:
           config: p/ci
           generateSarif: true
-          sarifFile: reportssemgrep.sarif
+          sarifFile: reports/semgrep.sarif
 
       - name: Upload Semgrep SARIF
         uses: github/codeql-action/upload-sarif@v3
