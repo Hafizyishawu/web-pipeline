@@ -37,7 +37,7 @@ jobs:
         working-directory: app
         run: npm test
 
-      - name: Prepare reports dir
+      - name: Ensure reports dir at repo root
         run: mkdir -p reports
 
       - name: Semgrep Scan
@@ -46,6 +46,13 @@ jobs:
           config: p/ci
           generateSarif: true
           sarifFile: reports/semgrep.sarif
+
+      - name: Show files for debug
+        if: always()
+        run: |
+          pwd
+          ls -lah
+          ls -lah reports || true
 
       - name: Upload Semgrep SARIF
         uses: github/codeql-action/upload-sarif@v3
