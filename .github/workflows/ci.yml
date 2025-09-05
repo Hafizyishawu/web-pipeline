@@ -40,11 +40,26 @@ jobs:
       - name: Ensure reports dir at repo root
         run: mkdir -p reports
 
-      - name: Semgrep Scan
+      - name: Semgrep Scan (with debugging)
         uses: returntocorp/semgrep-action@v1
         with:
           config: p/ci
+          generateSarif: true
+          auditOn: push
+        env:
+          SEMGREP_RULES: p/ci
 
+      - name: Debug - Find all files
+        if: always()
+        run: |
+          echo "=== Looking for ANY SARIF files ==="
+          find . -name "*.sarif" -type f 2>/dev/null || echo "No SARIF files found"
+
+          echo "=== Root directory contents ==="
+          ls -la
+
+          echo "=== Checking if Semgrep ran ==="
+          find . -name ".semgrep*" -type f 2>/dev/null || echo "No Semgrep cache files"
       - name: Check Semgrep output location
         if: always()
         run: |
