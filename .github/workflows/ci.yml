@@ -70,17 +70,6 @@ jobs:
           echo "=== Reports directory ==="
           ls -la reports || true
 
-      - name: Move and verify Semgrep SARIF
-        run: |
-          # Semgrep outputs to root by default
-          if [ -f "semgrep.sarif" ]; then
-            cp semgrep.sarif reports/semgrep.sarif
-            echo "✓ Semgrep SARIF found and copied"
-          else
-            echo "✗ Semgrep SARIF not found"
-            exit 1
-          fi
-
       - name: Upload Semgrep SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
