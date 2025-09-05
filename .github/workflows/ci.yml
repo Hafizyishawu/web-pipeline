@@ -44,15 +44,27 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: p/ci
-          generateSarif: true
-          sarifFile: reports/semgrep.sarif
 
-      - name: Show files for debug
+      - name: Check Semgrep output location
         if: always()
         run: |
-          pwd
-          ls -lah
-          ls -lah reports || true
+          echo "=== Finding SARIF file==="
+          find . -name "*.sarif" -type f 2>/dev/null || true
+          echo "=== Current directory ==="
+          ls -la
+          echo "=== Reports directory ==="
+          ls -la reports || true
+
+      - name: Move and verify Semgrep SARIF
+        run: |
+          # Semgrep outputs to root by default
+          if [ -f "semgrep.sarif" ]; then
+            cp semgrep.sarif reports/semgrep.sarif
+            echo "✓ Semgrep SARIF found and copied"
+          else
+            echo "✗ Semgrep SARIF not found"
+            exit 1
+          fi
 
       - name: Upload Semgrep SARIF
         uses: github/codeql-action/upload-sarif@v3
