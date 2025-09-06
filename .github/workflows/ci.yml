@@ -231,14 +231,26 @@ jobs:
           allow_issue_writing: false
           cmd_options: '-a -J reports/zap.json -w reports/zap.html'
 
+      - name: Ensure reports dir
+        if: always()
+        run: mkdir -p reports
+
+      - name: Guard Empty Reports
+        if: always()
+        run: |
+          [ -s reports/zap.json ] || echo '{}' > reports/zap.json
+          [ -s reports/zap.html ] || echo '<html><body>No report</body></html>' > reports/zap.html
+
       - name: Upload ZAP report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: zap-report
+          name: zap-scan
           path: |
-            zap-report.json
-            zap-report.html
+            reports/zap.json
+            reports/zap.html
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Stop container
         if: always()
