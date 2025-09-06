@@ -218,13 +218,13 @@ jobs:
       - name: Run ZAP Baseline Scan
         run: |
           # pull ZAP image
-          docker pull owasp/zap2docker-stable
+          docker pull ghcr.io/zaproxy/zaproxy:stable-20240906
 
           #Run ZAP baseline scan
           docker run --rm \
             --network host \
             -v ${pwd}:/zap/wrk:rw \
-            -t owasp/zap2docker-stable zap-baseline.py \
+            -t ghcr.io/zaproxy/zaproxy:stable-20240906 zap-baseline.py \
             -t http://localhost:3000 \
             -c .zap/rules.tsv \
             -j \
