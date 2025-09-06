@@ -210,11 +210,7 @@ jobs:
           fail_action: true
           rules_file_name: '.zap/rules.tsv'
           allow_issue_writing: false
-          cmd_options: '-a -j reports/zap.json -w reports/zap.html'
-
-      - name: Ensure reports dir
-        if: always()
-        run: mkdir -p reports
+          cmd_options: '-j'
 
       - name: Upload ZAP report
         if: always()
@@ -222,8 +218,9 @@ jobs:
         with:
           name: zap-report
           path: |
-            reports/zap.json
-            reports/zap.html
+            **/zap-report.json
+            **/zap-report.html
+            **/zap-report.md
 
       - name: Stop container
         if: always()

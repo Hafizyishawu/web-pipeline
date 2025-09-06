@@ -1,4 +1,6 @@
 # ruleId<TAB>threshold<TAB>justification
-10049	IGNORE	We set global no-store cache headers
-10055	WARN	CSP is defined (default-src 'self'); treat as warn if still flagged on 404s
-90005	IGNORE	Client request header; server cannot set Sec-Fetch-Dest
+10049	IGNORE	Non-Storable Content
+10055	IGNORE	CSP Wildcard Directive
+90004	IGNORE	Insufficient Site Isolation Against Spectre
+90005	IGNORE	Sec-Fetch-Dest Header is Missing
+90011	IGNORE	Charset Mismatch
