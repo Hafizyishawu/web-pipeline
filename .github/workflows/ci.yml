@@ -204,7 +204,6 @@ jobs:
 
 
       - name: ZAP Baseline (fail on alerts)
-        id: zap
         uses: zaproxy/action-baseline@v0.10.0
         with:
           target: 'http://localhost:3000'
