@@ -156,7 +156,7 @@ jobs:
       - name: SBOM (CycloneDX via Syft)
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: cyclonedx-json
           output-file: sbom-cyclonedx.json
 
