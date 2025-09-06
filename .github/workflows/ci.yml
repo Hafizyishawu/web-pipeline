@@ -230,6 +230,7 @@ jobs:
           rules_file_name: '.zap/rules.tsv'
           allow_issue_writing: false
           cmd_options: '-a -J reports/zap.json -w reports/zap.html'
+          artifact_name: 'zap-scan'
 
       - name: Ensure reports dir
         if: always()
