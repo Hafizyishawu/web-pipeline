@@ -1,4 +1,4 @@
-# ruleId <TAB> threshold <TAB> optional justification
-10037	IGNORE	X-Powered-By suppressed (removed in code)
-10055	IGNORE	CSP configured at app layer
-10063	WARN	Permissions-Policy set; warn if missing
+# ruleId<TAB>threshold<TAB>justification
+10049	IGNORE	We set global no-store cache headers
+10055	WARN	CSP is defined (default-src 'self'); treat as warn if still flagged on 404s
+90005	IGNORE	Client request header; server cannot set Sec-Fetch-Dest
