@@ -1,0 +1,4 @@
+# ruleId <TAB> threshold <TAB> optional justification
+10037	IGNORE	X-Powered-By suppressed (removed in code)
+10055	IGNORE	CSP configured at app layer
+10063	WARN	Permissions-Policy set; warn if missing
