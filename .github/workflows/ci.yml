@@ -239,6 +239,13 @@ jobs:
         if: always()
         run: docker rm -f webdemo || true
 
+      - name: List ZAP reports
+        if: always()
+        run: |
+          ls -lah reports
+          echo "---- zap.txt (head) ----"
+          head -n 40 reports/zap.txt || true
+
       # Guard files so the next step never 400s
       - name: Ensure reports dir
         if: always()
