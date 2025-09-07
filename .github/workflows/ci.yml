@@ -199,6 +199,7 @@ jobs:
 
       - name: Run container
         run: |
+          docker rm -f webdemo || true
           docker run -d --name webdemo -p 3000:3000 local/webdemo:test
           echo "waiting for app to start..."
 
@@ -215,30 +216,33 @@ jobs:
           curl -I http://localhost:3000 || true
 
 
-      - name: Pre-pull ZAP image (stable with fallback)
+      - name: Run ZAP Baseline (Docker)
         run: |
-          set -e
-          docker pull ghcr.io/zaproxy/zaproxy:stable \
-            || docker pull owasp/zap2docker-stable
+          mkdir -p reports
+          # copy your ZAP rules TSV so we can reference it from inside the container
+          cp .zap/rules.tsv reports/rules.tsv
+          # pre-pull a valid image (fallback to Docker Hub if GHCR hiccups)
+          docker pull ghcr.io/zaproxy/zaproxy:stable || docker pull owasp/zap2docker-stable
+          # run baseline and write reports into the mounted /zap/wrk dir
+          docker run --rm --network host \
+            -v "$PWD/reports:/zap/wrk" \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t http://localhost:3000 \
+            -a \
+            -c /zap/wrk/rules.tsv \
+            -J reports/wrk/zap.json \
+            -w reports/wrk/zap.html
 
-      - name: ZAP Baseline
-        uses: zaproxy/action-baseline@v0.10.0
-        with:
-          docker_name: ghcr.io/zaproxy/zaproxy:stable    # <- pin a valid image
-          target: 'http://localhost:3000'
-          fail_action: true
-          rules_file_name: '.zap/rules.tsv'
-          allow_issue_writing: false
-          cmd_options: '-a -J reports/zap.json -w reports/zap.html'
-          artifact_name: ''
+      - name: Stop container
+        if: always()
+        run: docker rm -f webdemo || true
 
+      # Guard files so the next step never 400s
       - name: Ensure reports dir
         if: always()
-        run: mkdir -p reports
-
-      - name: Guard Empty Reports
-        if: always()
         run: |
+          mkdir -p reports
           [ -s reports/zap.json ] || echo '{}' > reports/zap.json
           [ -s reports/zap.html ] || echo '<html><body>No report</body></html>' > reports/zap.html
 
@@ -252,10 +256,6 @@ jobs:
             reports/zap.html
           if-no-files-found: warn
           retention-days: 7
-
-      - name: Stop container
-        if: always()
-        run: docker rm -f webdemo || true
 
   push-image:
     name: Push to GHCR (only after ALL gates)
