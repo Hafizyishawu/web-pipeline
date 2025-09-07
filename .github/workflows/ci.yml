@@ -219,14 +219,16 @@ jobs:
       - name: Run ZAP Baseline (Docker)
         run: |
           mkdir -p reports
+          chmod 777 reports
+
           # Copy from hidden .zap folder
           cp .zap/rules.tsv reports/rules.tsv
+          chmod 666 reports/rules.tsv
 
           # Pull ZAP image
           docker pull ghcr.io/zaproxy/zaproxy:stable
           # Run baseline WITHOUT -a flag (important!)
           docker run --rm --network host \
-            -u 1000:1000 \
             -v "$PWD/reports:/zap/wrk" \
             ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py \
