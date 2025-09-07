@@ -230,7 +230,7 @@ jobs:
           rules_file_name: '.zap/rules.tsv'
           allow_issue_writing: false
           cmd_options: '-a -J reports/zap.json -w reports/zap.html'
-          artifact_name: 'zapscan${{ github.run_id }}'
+          artifact_name: ''
 
       - name: Ensure reports dir
         if: always()
